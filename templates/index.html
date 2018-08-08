@@ -1,0 +1,106 @@
+{% include "header.html" %}
+<section class="info-tiles">
+  <div class="tile is-ancestor has-text-centered">
+    <div class="tile is-parent">
+      <article class="tile is-child box">
+        <p class="title">{{ block_num }}</p>
+        <p class="subtitle">Blocks</p>
+      </article>
+    </div>
+    <div class="tile is-parent">
+      <article class="tile is-child box">
+        <p class="title">{{ transaction_num}}</p>
+        <p class="subtitle">Transactions</p>
+      </article>
+    </div>
+    <div class="tile is-parent">
+      <article class="tile is-child box">
+        <p class="title">{{ account_num }}</p>
+        <p class="subtitle">Accounts</p>
+      </article>
+    </div>
+    <div class="tile is-parent">
+      <article class="tile is-child box">
+        <p class="title">{{ action_num }}</p>
+        <p class="subtitle">Actions</p>
+      </article>
+    </div>
+    <div class="tile is-parent">
+      <article class="tile is-child box">
+        <p class="title">----</p>
+        <p class="subtitle">CPUPrice</p>
+      </article>
+    </div>
+    <div class="tile is-parent">
+      <article class="tile is-child box">
+        <p class="title">----</p>
+        <p class="subtitle">RamPrice</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="columns">
+  <div class="column is-centered">
+    <table class="table is-responsive is-fullwidth">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>RES Votes</th>
+          <th>Account</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for producer in producers %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>Reponse Team Node</td>
+          <td>{{ "%0.4s" | format(total_vote|float / producer['total_votes']|float) }} %</td>
+          <td><a href="/account/{{ producer.owner }}">{{ producer.owner }}</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="column">
+    asdf
+  </div>
+</div>
+<div class="columns">
+  <div class="columns is-half is-multiline">
+    {% for block in blocks %}
+    <div class="column is-half">
+    <div id="inbox-messages" class="inbox-messages">
+      <div id="msg-card-{{ loop.index }}" data-preview-id="0" class="card">
+        <div class="card-content">
+          <div class="msg-header">
+            <span class="msg-from">
+              <strong>Block# {{ block.block_num }}</strong>
+            </span>
+            <span class="msg-timestamp"></span>
+            <a href="/block/{{block.block_num}}"><span class="msg-attachment"><i class="fa fa-paperclip"></i></span></a>
+          </div>
+          <div class="msg-subject">
+            <span class="msg-subject">
+              {{ block.timestamp }}
+            </span>
+          </div>
+          <div class="msg-snippet">
+            <p>
+              <strong>Transaction:</strong> {{ block.transactions|length }}<br>
+              <strong>BlockID:</strong> {{ "%0.12s" | format(block.id) }} ...<br>
+              <strong>Producer:</strong> {{ block.producer}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="column is-half">
+    asdf
+  </div>
+</div>
+{% include "footer.html" %}
