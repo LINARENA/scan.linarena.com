@@ -28,3 +28,23 @@ def not_found(error):
 from app.dashboard.views import mod as dashboardModule
 app.register_blueprint(dashboardModule)
 
+from app.account.views import mod as accountModule
+app.register_blueprint(accountModule)
+
+from app.service.views import mod as serviceModule
+app.register_blueprint(serviceModule)
+
+from app.block.views import mod as blockModule
+app.register_blueprint(blockModule)
+
+from app.transaction.views import mod as transactionModule
+app.register_blueprint(transactionModule)
+
+from app.action.views import mod as actionModule
+app.register_blueprint(actionModule)
+
+from app.service.views import mod as serviceModule
+app.register_blueprint(serviceModule)
+
+from app.future.views import mod as futureModule
+app.register_blueprint(futureModule)
