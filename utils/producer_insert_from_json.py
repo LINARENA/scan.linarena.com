@@ -7,8 +7,10 @@ def insert_producer():
     with open('producers.json', 'r') as json_file:
         json_data = json.load(json_file)
     for data in json_data:
-        producer = Producer(**data)
-        db.session.add(producer)
+        dup = Producer.query.filter_by(name=data['name']).first()
+        if dup is None:
+            producer = Producer(**data)
+            db.session.add(producer)
     db.session.commit()
     return json_data
 
