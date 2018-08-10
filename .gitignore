@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# sqlite3
+app.db
+
+# GoogleCloud
+.gcloudignore
+
+# Secret Key
+secret_config.ini
