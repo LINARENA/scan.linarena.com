@@ -9,31 +9,43 @@
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
+        {% if transaction_num %}
         <p class="title">{{ transaction_num}}</p>
+        {% else %}
+        <p class="title">Soon</p>
+        {% endif %}
         <p class="subtitle">Transactions</p>
       </article>
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
+        {% if account_num %}
         <p class="title">{{ account_num }}</p>
+        {% else %}
+        <p class="title">Soon</p>
+        {% endif %}
         <p class="subtitle">Accounts</p>
       </article>
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
+        {% if action_num %}
         <p class="title">{{ action_num }}</p>
+        {% else %}
+        <p class="title">Soon</p>
+        {% endif %}
         <p class="subtitle">Actions</p>
       </article>
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
-        <p class="title">----</p>
+        <p class="title">Soon</p>
         <p class="subtitle">CPUPrice</p>
       </article>
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
-        <p class="title">----</p>
+        <p class="title">Soon</p>
         <p class="subtitle">RamPrice</p>
       </article>
     </div>
@@ -63,10 +75,27 @@
       </tbody>
     </table>
   </div>
-  <div class="column">
-    asdf
+  <div class="column is-centered">
+    <table class="table is-responsive is-fullwidth">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Public Key</th>
+          <th>LastSeenTime</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comming soon</td>
+          <td>Comming soon</td>
+          <td>Comming soon</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
+<hr>
+<br>
 <div class="columns">
   <div class="columns is-half is-multiline">
     {% for block in blocks %}
@@ -99,8 +128,25 @@
     </div>
     {% endfor %}
   </div>
-  <div class="column is-half">
-    asdf
+  <div class="column is-centered is-half">
+    <table class="table is-responsive is-fullwidth">
+      <thead>
+        <tr>
+          <th>ActionName</th>
+          <th>TxnID</th>
+          <th>Authorization</th>
+          <th>Handler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comming soon</td>
+          <td>Comming soon</td>
+          <td>Comming soon</td>
+          <td>Comming soon</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 {% include "footer.html" %}
