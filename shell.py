@@ -1,6 +1,6 @@
 import os
 import readline
-from pprint import ppring
+from pprint import pprint
 
 from flask import *
 from app import *

@@ -1,6 +1,6 @@
+from configparser import ConfigParser
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-
 from resapi.res_client import ResClient
 
 # General Flask Interface section
@@ -13,7 +13,9 @@ db = SQLAlchemy(app)
 
 # Blockchain Interface
 client = ResClient(api_endpoint='http://211.239.124.233:19108')
-
+config = ConfigParser()
+config.read('secret_config.ini')
+maps_api_js_key = config['GOOGLE']['maps_api_js_key']
 
 @app.route('/')
 def index():
@@ -27,6 +29,9 @@ def not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('500.html'), 500
+
+# database models import
+from app.service.models import *
 
 # Blueprint Register section
 from app.dashboard.views import mod as dashboardModule

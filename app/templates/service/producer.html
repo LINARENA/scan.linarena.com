@@ -1,0 +1,52 @@
+{% include 'header.html' %}
+<section class="hero is-info">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title has-text-centered">
+        {{ producer.name }}
+      </h1>
+      <h2 class="subtitle">
+        {{ producer.article}}
+      </h2>
+    </div>
+  </div>
+</section>
+<hr>
+<table class="table is-fullwidth">
+  <thead>
+    <th>Slogan</th>
+    <th>Location</th>
+    <th>Account</th>
+    <th>Homepage</th>
+  </thead>
+  <tbody>
+    <td>{{ producer.slogan }}</td>
+    <td>{{ producer.location }}</td>
+    <td><a href="/account/{{ producer.accnt_name }}">{{ producer.accnt_name }}</a></td>
+    <td><a target="_blank" href="{{producer.homepage}}">{{ producer.homepage }}</a></td>
+  </tbody>
+</table>
+<hr>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_js_key }}&language=en"></script>
+<script>
+  function initialize() {
+    var myLatlng = new google.maps.LatLng({{ producer.maps_lat }}, {{ producer.maps_lng }});
+    var mapOptions = {
+      zoom: 17,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.HYBRID
+    }
+
+    var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+    var marker = new google.maps.Marker({
+      position: {lat: {{producer.maps_lat }}, lng: {{producer.maps_lng }}},
+      map: map,
+      title: "{{ producer.name }}"
+    });
+  }
+</script>
+<body onload="initialize()">
+  <div id="map_canvas"style="width:100%; height:300px;"></div>
+</body>
+{% include 'footer.html' %}
