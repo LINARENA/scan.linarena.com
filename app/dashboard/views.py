@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template
+from app.service.models import Producer
 from app import client
 
 mod = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -10,6 +11,11 @@ def dashboard():
     transaction = client.chain_get_block(head_block_num)
     get_producers = client.chain_get_producers()
     producers = sorted(get_producers['rows'], key=lambda k: k['total_votes'])
+    for idx in range(1, len(producers)+1):
+        accnt_name = producers[idx-1]['owner']
+        info = Producer.query.filter_by(accnt_name=accnt_name).first()
+        if info is not None:
+            producers[idx-1]['team'] = info.name
     total_vote = get_producers['total_producer_vote_weight']
     blocks = [client.chain_get_block(head_block_num)]
     for block in reversed(range(head_block_num-3, head_block_num)):

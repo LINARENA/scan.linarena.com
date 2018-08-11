@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, abort
 from app.service.models import Producer
 from app import client, db
 from app import maps_api_js_key
@@ -31,6 +31,8 @@ def producer_list():
 @mod.route('/producer/<name>')
 def producer(name):
     producer = Producer.query.filter_by(name=name).first()
+    if producer is None:
+        abort(404)
     return render_template('service/producer.html',
                            producer=producer,
                            maps_api_js_key=maps_api_js_key)

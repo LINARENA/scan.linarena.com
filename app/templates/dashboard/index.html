@@ -67,7 +67,11 @@
         {% for producer in producers %}
         <tr>
           <td>{{ loop.index }}</td>
-          <td><a href='/service/producer/reponse'>Reponsee</a></td>
+          {% if producer.team %}
+          <td><a href='/service/producer/{{ producer.team }}'>{{ producer.team }}</a></td>
+          {% else %}
+          <td>Soon</td>
+          {% endif %}
           <td>{{ "%0.4s" | format(total_vote|float / producer['total_votes']|float) }} %</td>
           <td><a href="/account/{{ producer.owner }}">{{ producer.owner }}</a></td>
         </tr>
