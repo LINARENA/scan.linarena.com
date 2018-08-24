@@ -12,7 +12,7 @@ db = SQLAlchemy(app)
 
 
 # Blockchain Interface
-client = ResClient(api_endpoint='http://211.239.124.233:19108')
+client = ResClient(api_endpoint='http://211.239.124.233:19407')
 config = ConfigParser()
 config.read('secret_config.ini')
 maps_api_js_key = config['GOOGLE']['maps_api_js_key']
