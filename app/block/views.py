@@ -21,6 +21,8 @@ def block_info_from_id(block_num):
 
 @mod.route('/id/<block_hash>/')
 def block_info_from_hash(block_hash):
+    if len(block_hash) != 64:
+        abort(404)
     block = client.chain_get_block(block_hash)
     if block is None:
         abort(404)
