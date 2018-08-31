@@ -16,13 +16,18 @@ def account_info_from_name(accnt_name, page):
     if accnt_info is None:
         abort(404)
     bal_url = '/v1/chain/get_currency_balance'
-    last_seq_num = actions[-1]['account_action_seq']
-    last_page = round(actions[-1]['account_action_seq'] / 20)
-    if page != 1:
-        minus_offset = (page-1) * 20
-        pos = last_seq_num - minus_offset - 20
-        offset = 20
-        actions = client.history_get_actions(accnt_name, pos, offset)['actions']
+    if len(actions) == 0:
+        actions = None
+        last_seq_num = 0
+        last_page = 0
+    else:
+        last_seq_num = actions[-1]['account_action_seq']
+        last_page = round(actions[-1]['account_action_seq'] / 20)
+        if page != 1:
+            minus_offset = (page-1) * 20
+            pos = last_seq_num - minus_offset - 20
+            offset = 20
+            actions = client.history_get_actions(accnt_name, pos, offset)['actions']
     currency = requests.post(client.api_endpoint+bal_url,
                              json={'code': 'eosio.token',
                                    'symbol': None,

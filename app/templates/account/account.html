@@ -107,6 +107,7 @@
       </tbody>
     </table>
     <hr><center><h5 class="subtitle is-5">Actions</h5></center>
+    {% if actions %}
     <table class="table is-fullwidth is-striped">
       <thead>
         <tr>
@@ -165,6 +166,7 @@
         {% endfor %}
       </tbody>
     </table>
+    {% endif %}
   </span>
   <span data-content="2">
     <pre>{{ accnt_info|tojson_pretty|safe }}</pre>
