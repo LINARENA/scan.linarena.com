@@ -1,6 +1,5 @@
 import requests
 from flask import Blueprint, request, render_template, abort
-from flask_paginate import Pagination, get_page_parameter
 from app import client
 
 mod = Blueprint('account', __name__, url_prefix='/account')
