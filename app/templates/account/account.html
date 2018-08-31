@@ -1,2 +1,258 @@
 {% include 'header.html' %}
+<hr>
+<center><h4 class="subtitle is-4">Current view accnt_info is <strong>{{ accnt_info.account_name }}</strong></h4></center>
+<hr>
+<div class="tabs is-toggle is-fullwidth" id="tabs">
+  <ul>
+    <li class="is-active" data-tab="1">
+      <a>
+        <span class="icon is-small"><i class="fa fa-database"></i></span>
+        <span>Overview</span>
+      </a>
+    </li>
+    <li data-tab="2">
+      <a>
+        <span class="icon is-small"><i class="fa fa-file"></i></span>
+        <span>Raw</span>
+      </a>
+    </li>
+  </ul>
+</div>
+<div id="tab-content">
+  <span class="is-active" data-content="1">
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>Data Field</th>
+          <th>Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Account name</td>
+          <td><a href="/account/{{ accnt_info.account_name}}">{{ accnt_info.account_name }}</a></td>
+        </tr>
+        <tr>
+          <td>Created at</td>
+          <td><a href="/block/num/{{ accnt_info.block_num}}/">{{ accnt_info.created }}</a></td>
+        </tr>
+        <tr>
+          <td>Total Balance</td>
+          <td>
+            <table>
+              <thead>
+                <tr>
+                  <th>TOKEN</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for curr in currency %}
+                <tr>
+                  <td>{{ curr.split(' ')[0] }}</td/>
+                  <td>{{ curr.split(' ')[-1] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>RAM Information</td>
+          <td>
+            {% set ram_percent = ((accnt_info.ram_quota|int - accnt_info.ram_usage) / accnt_info.ram_quota|int * 100) | string %}
+            <h6>RAM Used: <strong>{{ accnt_info.ram_usage }}</strong> &nbsp; RAM Available: <strong>{{ accnt_info.ram_quota|int - accnt_info.ram_usage }}</strong> &nbsp; RAM quota: <strong>{{ accnt_info.ram_quota }}</strong></h6>
+            <progress class="progress is-success is-large show-value" value="{{ ram_percent }}" max="100"></progress>
+          </td>
+        </tr>
+        <tr>
+          <td>CPU Limit</td>
+          <td>
+            {% set cpu_percent = ((accnt_info.cpu_limit.max|int - accnt_info.cpu_limit.used) / accnt_info.cpu_limit.max|int * 100)|string %}
+            <h6>CPU Used: <strong>{{ accnt_info.cpu_limit.used }}</strong> &nbsp; CPU Available: <strong>{{ accnt_info.cpu_limit.available }}</strong> &nbsp; CPU Max: <strong>{{ accnt_info.cpu_limit.max }}</strong></h6>
+            <progress class="progress is-success is-large show-value" value="{{ cpu_percent }}" max="100"></progress>
+          </td>
+        </tr>
+        <tr>
+          <td>NET Limit</td>
+          <td>
+            {% set net_percent = ((accnt_info.net_limit.max|int - accnt_info.net_limit.used) / accnt_info.net_limit.max|int * 100)|string %}
+            <h6>NET Used: <strong>{{ accnt_info.net_limit.used }}</strong> &nbsp; NET Available: <strong>{{ accnt_info.net_limit.available }}</strong> &nbsp; NET Max: <strong>{{ accnt_info.net_limit.max }}</strong></h6>
+            <progress class="progress is-success is-large show-value" value="{{ net_percent }}" max="100"></progress>
+          </td>
+        </tr>
+        <tr>
+          <td>Permsion Information</td>
+          <td>
+            <table class="is-striped">
+              <thead>
+                <tr>
+                  <th>Data Field</th>
+                  <th>Values</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for permission in accnt_info.permissions %}
+                <tr>
+                  <td>{{ permission.perm_name }}</td>
+                  {% if permission.required_auth['keys']|length != 0 %}
+                  <td><button class="button is-rounded">{{ permission.required_auth['keys'][0]['key'] }} (weight: {{ permission.required_auth['keys'][0]['weight'] }})</button></td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <hr><center><h5 class="subtitle is-5">Actions</h5></center>
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>name</th>
+          <th>data</th>
+          <th>TxnID</th>
+          <th>Authorization</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for action in actions|reverse %}
+        <tr>
+          <td><button class="button is-{{ ['primary', 'link', '', 'info', 'success', 'danger']|random }} is-outlined">{{ action.action_trace.act.name }}</button></td>
+          <td>
+            <table class="is-bordered is-striped">
+              <thead>
+                <tr>
+                  <th>Filed</th>
+                  <th>Values</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Contract</td>
+                  <td><a href='/account/{{ action.action_trace.act.account }}'><button class="button is-rounded">{{ action.action_trace.act.account }}</button></a></td>
+                </tr>
+                <tr>
+                  <td>data</td>
+                  <td>
+                    <table class="is-bordered is-striped">
+                      <thead>
+                        <th>Filed</th>
+                        <th>Values</th>
+                      </thead>
+                      <tbody>
+                        {% for key, value in action.action_trace.act.data.items() %}
+                        <tr>
+                          <td>{{ key }}</td>
+                          <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td><a href="/transaction/{{ action.action_trace.trx_id }}/"> {{ "%0.12s" | format(action.action_trace.trx_id) }}...</a></td>
+          <td>
+          {% for auth in action.action_trace.act.authorization %}
+          <a href='/account/{{ auth.actor }}/'><button class="button is-rounded">{{ auth.actor }} (permission: {{ auth.permission }})</button></a><br>
+          {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </span>
+  <span data-content="2">
+    <pre>{{ accnt_info|tojson_pretty|safe }}</pre>
+  </span>
+</div>
+<hr>
+<nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+  {% if page == 1 %}
+  <a class="pagination-previous">Previous</a>
+  {% else %}
+  <a class="pagination-previous" href="/account/{{ accnt_info.account_name }}/{{ page-1 }}">Previous</a>
+  {% endif %}
+  {% if page != last_page and last_page > 0%}
+  <a class="pagination-next" href="/account/{{ accnt_info.account_name }}/{{ page+1 }}">Next page</a>
+  {% else %}
+  <a class="pagination-next">Next page</a>
+  {% endif %}
+  <ul class="pagination-list">
+    {% if page == 1 %}
+    <li><a class="pagination-link is-current" aria-label="Goto page 1" aria-crreunt="page">1</a></li>
+    {% else %}
+    <li><a class="pagination-link" aria-label="Goto page 1" href="/account/{{ accnt_info.account_name }}/1">1</a></li>
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    {% endif %}
+    {% for i in range(page-1, page+2) %}
+    {% if i != 1 and i != 0 and i != last_page and i < last_page %}
+    {% if i == page %}
+    <li><a class="pagination-link is-current" aria-label="Goto page {{ i }}" href="/account/{{ accnt_info.account_name }}/{{ i }}">{{ i }}</a></li>
+    {% else %}
+    <li><a class="pagination-link" aria-label="Goto page {{ i }}" href="/account/{{ accnt_info.account_name }}/{{ i }}">{{ i }}</a></li>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% if last_page > 0 %}
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    <li><a class="pagination-link" aria-label="Goto page {{ last_page }}" href="/account/{{ accnt_info.account_name }}/{{ last_page }}">{{ last_page }}</a></li>
+    {% endif %}
+  </ul>
+</nav>
+<style>
+  #tab-content span {
+    display: none;
+  }
+
+  #tab-content span.is-active {
+    display: block;
+  }
+
+  progress.show-value {
+    position: relative;
+  }
+
+  progress.show-value:after {
+    content: attr(value)'%';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: calc(1rem / 1.5);
+    line-height: 1rem;
+  }
+
+  progress.show-value.is-small:after {
+    font-size: calc(0.75rem / 1.5);
+    line-height: 0.75rem;
+  }
+
+  progress.show-value.is-medium:after {
+    font-size: calc(1.25rem / 1.5);
+    line-height: 1.25rem;
+  }
+
+  progress.show-value.is-large:after {
+    font-size: calc(1.5rem / 1.5);
+    line-height: 1.5rem;
+  }
+</style>
+<script>
+$(document).ready(function() {
+  $('#tabs li').on('click', function() {
+    var tab = $(this).data('tab');
+
+    $('#tabs li').removeClass('is-active');
+    $(this).addClass('is-active');
+
+    $('#tab-content span').removeClass('is-active');
+    $('span[data-content="' + tab + '"]').addClass('is-active');
+  });
+});
+</script>
 {% include 'footer.html' %}

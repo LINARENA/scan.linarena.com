@@ -1,2 +1,148 @@
 {% include 'header.html' %}
+<hr>
+<center><h4 class="subtitle is-4">Current view Transaction is <strong>{{ transaction.id }}</strong></h4></center>
+<hr>
+<div class="tabs is-toggle is-fullwidth" id="tabs">
+  <ul>
+    <li class="is-active" data-tab="1">
+      <a>
+        <span class="icon is-small"><i class="fa fa-database"></i></span>
+        <span>Overview</span>
+      </a>
+    </li>
+    <li data-tab="2">
+      <a>
+        <span class="icon is-small"><i class="fa fa-file"></i></span>
+        <span>Raw</span>
+      </a>
+    </li>
+  </ul>
+</div>
+<div id="tab-content">
+  <span class="is-active" data-content="1">
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>Data Field</th>
+          <th>Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Txn ID</td>
+          <td><a href="/transaction/{{ transaction.id }}/">{{ transaction.id}}</a></td>
+        </tr>
+        <tr>
+          <td>Block Number</td>
+          <td><a href="/block/num/{{ transaction.block_num}}/">{{ transaction.block_num }}</a></td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td>{{ transaction.trx.receipt.status }}</td>
+        </tr>
+        <tr>
+          <td>Expiration</td>
+          <td>{{ transaction.trx.trx.expiration }}</td>
+        </tr>
+        <tr>
+          <td>Ref Block Num</td>
+          <td><a href="/block/num/{{ transaction.trx.trx.ref_block_num }}">{{ transaction.trx.trx.ref_block_num }}</a></td>
+        </tr>
+        <tr>
+          <td>Ref Block Prefix</td>
+          <td>{{ transaction.trx.trx.ref_block_prefix }}</td>
+        </tr>
+        <tr>
+          <td>Actions</td>
+          <td>{{ transaction.trx.trx.actions | length}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr><center><h5 class="subtitle is-5">Actions</h5></center>
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>name</th>
+          <th>data</th>
+          <th>TxnID</th>
+          <th>Authorization</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for action in transaction.trx.trx.actions %}
+        <tr>
+          <td><button class="button is-{{ ['primary', 'link', '', 'info', 'success', 'danger']|random }} is-outlined">{{ action.name }}</button></td>
+          <td>
+            <table class="is-bordered is-striped">
+              <thead>
+                <tr>
+                  <th>Filed</th>
+                  <th>Values</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Contract</td>
+                  <td><a href='/account/{{ action.account }}'><button class="button is-rounded">{{ action.account }}</button></a></td>
+                </tr>
+                <tr>
+                  <td>data</td>
+                  <td>
+                    <table class="is-bordered is-striped">
+                      <thead>
+                        <th>Filed</th>
+                        <th>Values</th>
+                      </thead>
+                      <tbody>
+                      {% for key, value in action.data.items() %}
+                        <tr>
+                          <td>{{ key }}</td>
+                          <td>{{ value }}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td><a href="/transaction/{{ transaction.id }}/"> {{ "%0.12s" | format(transaction.id) }}...</a></td>
+          <td>
+          {% for auth in action.authorization %}
+          <a href='/account/{{ auth.actor }}/'><button class="button is-rounded">{{ auth.actor }} (permission: {{ auth.permission }})</button></a><br>
+          {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </span>
+  <span data-content="2">
+    <pre>{{ transaction|tojson_pretty|safe }}</pre>
+  </span>
+</div>
+<style>
+  #tab-content span {
+    display: none;
+  }
+
+  #tab-content span.is-active {
+    display: block;
+  }
+
+</style>
+<script>
+$(document).ready(function() {
+  $('#tabs li').on('click', function() {
+    var tab = $(this).data('tab');
+
+    $('#tabs li').removeClass('is-active');
+    $(this).addClass('is-active');
+
+    $('#tab-content span').removeClass('is-active');
+    $('span[data-content="' + tab + '"]').addClass('is-active');
+  });
+});
+</script>
 {% include 'footer.html' %}

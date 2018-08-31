@@ -1,15 +1,112 @@
 {% include 'header.html' %}
-<nav class="pagination is-rounded" role="navigation" aria-label="pagination">
-  <a class="pagination-previous">Previous</a>
-  <a class="pagination-next">Next page</a>
-  <ul class="pagination-list">
-    <li><a class="pagination-link" aria-label="Goto page 1">1</a></li>   
-    <li><span class="pagination-ellipsis">&hellip;</span></li>
-    <li><a class="pagination-link" aria-label="Goto page 45">45</a></li>
-    <li><a class="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a></li>
-    <li><a class="pagination-link" aria-label="Goto page 47">47</a></li>
-    <li><span class="pagination-ellipsis">&hellip;</span></li>
-    <li><a class="pagination-link" aria-label="Goto page 86">86</a></li>
+<hr>
+<center><h4 class="subtitle is-4">Current view block number is <strong>{{ block.block_num }}</strong></h4></center>
+<hr>
+<div class="tabs is-toggle is-fullwidth" id="tabs">
+  <ul>
+    <li class="is-active" data-tab="1">
+      <a>
+        <span class="icon is-small"><i class="fa fa-database"></i></span>
+        <span>Overview</span>
+      </a>
+    </li>
+    <li data-tab="2">
+      <a>
+        <span class="icon is-small"><i class="fa fa-file"></i></span>
+        <span>Raw</span>
+      </a>
+    </li>
   </ul>
-</nav>
+</div>
+<div id="tab-content">
+  <span class="is-active" data-content="1">
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>Data Field</th>
+          <th>Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Block ID</td>
+          <td><a href="/block/id/{{ block.id }}/">{{ block.id}}</a></td>
+        </tr>
+        <tr>
+          <td>Block Number</td>
+          <td><a href="/block/num/{{ block.block_num}}/">{{ block.block_num }}</a></td>
+        </tr>
+        <tr>
+          <td>Transactions</td>
+          <td>{{ block.transactions|length }}</td>
+        </tr>
+        <tr>
+          <td>Producer</td>
+          <td>{{ block.producer}}</td>
+        </tr>
+        <tr>
+          <td>Timestamp</td>
+          <td>{{ block.timestamp }}</td>
+        </tr>
+        <tr>
+          <td>pending</td>
+          <td>false</td>
+        </tr>
+        <tr>
+          <td>transactionMerkleRoot</td>
+          <td>{{ block.transaction_mroot }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr><center><h5 class="subtitle is-5">Transactions</h5></center>
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>TxnID</th>
+          <th>Status</th>
+          <th>Expiration</th>
+          <th>Actions</th>
+          <th>BlockID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for transaction in block.transactions %}
+        <tr>
+          <td><a href="/transaction/{{ transaction.trx.id }}/">{{ transaction.trx.id }}</a></td>
+          <td>{{ transaction.status }}</td>
+          <td>{{ transaction.trx.transaction.expiration }}
+          <td>{{ transaction.trx.transaction.actions|length }}</td>
+          <td>TODO</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </span>
+  <span data-content="2">
+    <pre>{{ block|tojson_pretty|safe }}</pre>
+  </span>
+</div>
+<style>
+  #tab-content span {
+    display: none;
+  }
+
+  #tab-content span.is-active {
+    display: block;
+  }
+
+</style>
+<script>
+$(document).ready(function() {
+  $('#tabs li').on('click', function() {
+    var tab = $(this).data('tab');
+
+    $('#tabs li').removeClass('is-active');
+    $(this).addClass('is-active');
+
+    $('#tab-content span').removeClass('is-active');
+    $('span[data-content="' + tab + '"]').addClass('is-active');
+  });
+});
+</script>
 {% include 'footer.html' %}

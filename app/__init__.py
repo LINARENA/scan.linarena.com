@@ -1,12 +1,19 @@
+import json
 from configparser import ConfigParser
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from resapi.res_client import ResClient
 
+
+def to_pretty_json(value):
+    return json.dumps(value, sort_keys=True,
+                      indent=4, separators=(',', ': '))
+
+# CONFIG JSON BEAUTIFY
 # General Flask Interface section
 app = Flask(__name__)
 app.config.from_object('config')
-
+app.jinja_env.filters['tojson_pretty'] = to_pretty_json
 # General SQLAlchemy Database section
 db = SQLAlchemy(app)
 
@@ -32,6 +39,8 @@ def internal_error(error):
 
 # database models import
 from app.service.models import *
+from app.block.models import *
+from app.transaction.models import *
 
 # Blueprint Register section
 from app.dashboard.views import mod as dashboardModule

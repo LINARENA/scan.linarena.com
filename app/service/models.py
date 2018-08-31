@@ -27,4 +27,4 @@ class Producer(db.Model):
         self.maps_lng = maps_lng
 
     def __repr__(self):
-        return '<Produce %r>' % self.name
+        return '<Producer %r>' % self.name

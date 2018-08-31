@@ -61,6 +61,8 @@ class ResClient:
     def chain_get_block(self, num_or_id):
         return self.api_request(endpoints.CHAIN_GET_BLOCK, {'block_num_or_id': num_or_id})
 
+    def chain_get_account(self, accnt_name):
+        return self.api_request(endpoints.CHAIN_GET_ACCOUNT, {'account_name': accnt_name})
     def chain_abi_json_to_bin(self, abi_args):
         return self.api_request(endpoints.CHAIN_ABI_JSON_TO_BIN, abi_args)
 
@@ -78,8 +80,13 @@ class ResClient:
         })
 
     # ===== /v1/history/ =====
+    def history_get_actions(self, account_name, pos=-1, offset=-20):
+        return self.api_request(endpoints.HISTORY_GET_ACTIONS,
+                                 {'account_name': account_name,
+                                  'pos': pos,
+                                  'offset': offset})
     def history_get_transaction(self, transaction_id):
-        return self.api.request(endpoints.HISTORY_GET_TRANSACTION, {'id': transaction_id})
+        return self.api_request(endpoints.HISTORY_GET_TRANSACTION, {'id': transaction_id})
     # ===== SYSTEM CONTRACT TRANSACTIONS =====
     def get_system_newaccount_binargs(self, creator, name, owner_key, active_key):
         return self.chain_abi_json_to_bin({
