@@ -1,12 +1,25 @@
 import requests
 from flask import Blueprint, request, render_template, abort
+from app.account.models import *
 from app import client
 
 mod = Blueprint('account', __name__, url_prefix='/account')
 
-@mod.route('/')
-def account_list():
-    return render_template('account/account_list.html')
+@mod.route('/', defaults={'page': 1})
+@mod.route('/<int:page>')
+def account_list(page):
+    last_account = Account.query.order_by(Account.idx.desc()).first()
+    if last_account is None:
+        abort(404)
+    last_page = round(last_account.idx / 20)
+    rows_first = last_account.idx - (page-1)*20
+    rows_last = last_account.idx - page*20
+    accounts = Account.query.filter(Account.idx>=rows_last).\
+        filter(Account.idx<=rows_first).order_by(Account.idx.desc()).all()
+    return render_template('account/account_list.html',
+                           page=page,
+                           last_page=last_page,
+                           accounts=accounts)
 
 @mod.route('/<accnt_name>/', defaults={'page': 1})
 @mod.route('/<accnt_name>/<int:page>')

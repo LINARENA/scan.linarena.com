@@ -5,12 +5,13 @@ config = ConfigParser()
 config.read('secret_config.ini')
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
-DEBUG = False
+DEBUG = True
 
 # SECRET_KEY = '{{ REPLACE THIS}}'
 SECRET_KEY = os.urandom(24)
 if DEBUG:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'app.db')
+    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = config['LOCAL']['SQLALCHEMY_DATABASE_URI']
 else:
     SQLALCHEMY_DATABASE_URI = config['GCLOUD']['SQLALCHEMY_DATABASE_URI']
 SQLALCHEMY_TRACK_MODIFICATIONS = False

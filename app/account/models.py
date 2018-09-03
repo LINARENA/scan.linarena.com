@@ -2,19 +2,17 @@ from app import db
 from sqlalchemy.dialects.mysql import BIGINT
 
 
-class Action(db.Model):
-    __tablename__ = 'action_tbl'
+class Account(db.Model):
+    __tablename__ = 'account_tbl'
     idx = db.Column(BIGINT, primary_key=True)
-    aciton_name = db.Column(db.String(40))
-    txn_id = db.Column(db.String(64), unique=True)
-    authorization = db.Column(db.String(40))
-    contract = db.Column(db.String(12))
+    account_name = db.Column(db.String(40))
+    created = db.Column(db.String(40))
+    block_num = db.Column(BIGINT)
 
-    def __init__(self, action_name, txn_id, authorization, contract):
-        self.action_name = action_name
-        self.txn_id = txn_id
-        self.authorization = authorizaton
-        self.contract = ctonract
+    def __init__(self, account_name, created, block_num):
+        self.account_name = account_name
+        self.created = created
+        self.block_num = block_num
 
     def __repr__(self):
-        return '<Action %r>' % action_name
+        return '<Account %r>' % self.account_name

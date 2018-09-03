@@ -9,8 +9,8 @@
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
-        {% if transaction_num %}
-        <p class="title">{{ transaction_num}}</p>
+        {% if count['trx_cnt'] %}
+        <p class="title">{{ count['trx_cnt'] }}</p>
         {% else %}
         <p class="title">Soon</p>
         {% endif %}
@@ -19,8 +19,8 @@
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
-        {% if account_num %}
-        <p class="title">{{ account_num }}</p>
+        {% if count['account'] %}
+        <p class="title">{{ count['account'] }}</p>
         {% else %}
         <p class="title">Soon</p>
         {% endif %}
@@ -29,8 +29,8 @@
     </div>
     <div class="tile is-parent">
       <article class="tile is-child box">
-        {% if action_num %}
-        <p class="title">{{ action_num }}</p>
+        {% if count['action'] %}
+        <p class="title">{{ count['action'] }}</p>
         {% else %}
         <p class="title">Soon</p>
         {% endif %}
@@ -84,16 +84,18 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Public Key</th>
-          <th>LastSeenTime</th>
+          <th>Created</th>
+          <th>Created Block</th>
         </tr>
       </thead>
       <tbody>
+        {% for account in accounts %}
         <tr>
-          <td>Comming soon</td>
-          <td>Comming soon</td>
-          <td>Comming soon</td>
+          <td><a href="/account/{{ account.account_name }}/">{{ account.account_name }}</a></td>
+          <td>{{ account.created }}</td>
+          <td><a href="/block/num/{{ account.block_num }}/">{{ account.block_num }}</a></td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
@@ -122,7 +124,7 @@
           <div class="msg-snippet">
             <p>
               <strong>Transaction:</strong> {{ block.transactions|length }}<br>
-              <strong>BlockID:</strong> {{ "%0.12s" | format(block.id) }} ...<br>
+              <strong>BlockID:</strong> <a href="/block/id/{{block.id}}/">{{ "%0.12s" | format(block.id) }}...</a><br>
               <strong>Producer:</strong> {{ block.producer}}
             </p>
           </div>
@@ -139,16 +141,18 @@
           <th>ActionName</th>
           <th>TxnID</th>
           <th>Authorization</th>
-          <th>Handler</th>
+          <th>Contract</th>
         </tr>
       </thead>
       <tbody>
+        {% for action in actions %}
         <tr>
-          <td>Comming soon</td>
-          <td>Comming soon</td>
-          <td>Comming soon</td>
-          <td>Comming soon</td>
+          <td>{{ action.action_name }}</td>
+          <td><a href="/transaction/{{ action.txn_id }}/">{{ "%0.12s" | format(action.txn_id) }}...</a></td>
+          <td><a href="/account/{{ (action.authorization|str_to_json)['actor'] }}">{{ (action.authorization|str_to_json)['actor'] }}</a></td>
+          <td><a href="/account/{{ action.contract }}/">{{ action.contract }}</a></td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>

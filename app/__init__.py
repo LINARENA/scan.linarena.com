@@ -1,5 +1,9 @@
 import json
+import ast
+import atexit
+import time
 from configparser import ConfigParser
+from threading import Thread
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from resapi.res_client import ResClient
@@ -9,11 +13,15 @@ def to_pretty_json(value):
     return json.dumps(value, sort_keys=True,
                       indent=4, separators=(',', ': '))
 
+def str_to_json(value):
+    return ast.literal_eval(value)
+
 # CONFIG JSON BEAUTIFY
 # General Flask Interface section
 app = Flask(__name__)
 app.config.from_object('config')
 app.jinja_env.filters['tojson_pretty'] = to_pretty_json
+app.jinja_env.filters['str_to_json'] = str_to_json
 # General SQLAlchemy Database section
 db = SQLAlchemy(app)
 
@@ -24,6 +32,8 @@ config = ConfigParser()
 config.read('secret_config.ini')
 maps_api_js_key = config['GOOGLE']['maps_api_js_key']
 
+
+# Default Flask Interface adding
 @app.route('/')
 def index():
     return redirect((url_for('dashboard.dashboard')), code=301)
@@ -41,6 +51,8 @@ def internal_error(error):
 from app.service.models import *
 from app.block.models import *
 from app.transaction.models import *
+from app.action.models import *
+from app.account.models import *
 
 # Blueprint Register section
 from app.dashboard.views import mod as dashboardModule

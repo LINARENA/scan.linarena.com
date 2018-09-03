@@ -4,3 +4,4 @@ flask-wtf
 PyMySQL
 flask-pagination
 requests
+apscheduler

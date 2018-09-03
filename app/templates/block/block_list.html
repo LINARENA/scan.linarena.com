@@ -1,27 +1,116 @@
 {% include 'header.html' %}
-<header class="bd-header">
-  <div class="bd-header-titles">
-    <h1 class="title">
-      Comming Soon Features
-    </h1>
-    <p class="subtitle is-4">
-      Everything you need to <strong>Contact</strong> <a href="mailto:support@reponse.co">support@reponse.co</a>
-    </p>
-  </div>
-</header>
-<!--
+<hr>
+    {% if blocks %}
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>Block Num</th>
+          <th>Block ID</th>
+          <th>Timestamp</th>
+          <th>Transactions</th>
+          <th>Producer</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for block in blocks %}
+        <tr>
+          <td><a href="/block/num/{{ block.block_num }}/">{{ block.block_num }}</a></td>
+          <td><a href="/block/id/{{ block.block_id }}/">{{ block.block_id }}</a></td>
+          <td>{{ block.timestamp }}</td>
+          <td>{{ block.transactions }}</td>
+          <th><a href="/account/{{ block.producer}}">{{ block.producer }}</a></th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+<hr>
 <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+  {% if page == 1 %}
   <a class="pagination-previous">Previous</a>
+  {% else %}
+  <a class="pagination-previous" href="/block/{{ page-1 }}">Previous</a>
+  {% endif %}
+  {% if page != last_page and last_page > 0%}
+  <a class="pagination-next" href="/block/{{ page+1 }}">Next page</a>
+  {% else %}
   <a class="pagination-next">Next page</a>
+  {% endif %}
   <ul class="pagination-list">
-    <li><a class="pagination-link" aria-label="Goto page 1">1</a></li>
+    {% if page == 1 %}
+    <li><a class="pagination-link is-current" aria-label="Goto page 1" aria-crreunt="page">1</a></li>
+    {% else %}
+    <li><a class="pagination-link" aria-label="Goto page 1" href="/block/1">1</a></li>
     <li><span class="pagination-ellipsis">&hellip;</span></li>
-    <li><a class="pagination-link" aria-label="Goto page 45">45</a></li>
-    <li><a class="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a></li>
-    <li><a class="pagination-link" aria-label="Goto page 47">47</a></li>
+    {% endif %}
+    {% for i in range(page-1, page+2) %}
+    {% if i != 1 and i != 0 and i != last_page and i < last_page %}
+    {% if i == page %}
+    <li><a class="pagination-link is-current" aria-label="Goto page {{ i }}" href="/block/{{ i }}">{{ i }}</a></li>
+    {% else %}
+    <li><a class="pagination-link" aria-label="Goto page {{ i }}" href="/block/{{ i }}">{{ i }}</a></li>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% if last_page > 0 %}
     <li><span class="pagination-ellipsis">&hellip;</span></li>
-    <li><a class="pagination-link" aria-label="Goto page 86">86</a></li>
+    {% endif %}
+    {% if last_page == page %}
+    <li><a class="pagination-link is-current" aria-label="Goto page {{ last_page }}" href="/block/{{ last_page }}">{{ last_page }}</a></li>
+    {% else %}
+    <li><a class="pagination-link" aria-label="Goto page {{ last_page }}" href="/block/{{ last_page }}">{{ last_page }}</a></li>
+    {% endif %}
   </ul>
 </nav>
--->
+<style>
+  #tab-content span {
+    display: none;
+  }
+
+  #tab-content span.is-active {
+    display: block;
+  }
+
+  progress.show-value {
+    position: relative;
+  }
+
+  progress.show-value:after {
+    content: attr(value)'%';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: calc(1rem / 1.5);
+    line-height: 1rem;
+  }
+
+  progress.show-value.is-small:after {
+    font-size: calc(0.75rem / 1.5);
+    line-height: 0.75rem;
+  }
+
+  progress.show-value.is-medium:after {
+    font-size: calc(1.25rem / 1.5);
+    line-height: 1.25rem;
+  }
+
+  progress.show-value.is-large:after {
+    font-size: calc(1.5rem / 1.5);
+    line-height: 1.5rem;
+  }
+</style>
+<script>
+$(document).ready(function() {
+  $('#tabs li').on('click', function() {
+    var tab = $(this).data('tab');
+
+    $('#tabs li').removeClass('is-active');
+    $(this).addClass('is-active');
+
+    $('#tab-content span').removeClass('is-active');
+    $('span[data-content="' + tab + '"]').addClass('is-active');
+  });
+});
+</script>
 {% include 'footer.html' %}

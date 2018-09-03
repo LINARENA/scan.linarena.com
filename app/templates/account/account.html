@@ -146,7 +146,28 @@
                         {% for key, value in action.action_trace.act.data.items() %}
                         <tr>
                           <td>{{ key }}</td>
+                          {% if value is mapping %}
+                          <td>
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Field</th>
+                                  <th>Value</th>
+                                </tr>
+                              </thead>
+                              {% for key, val in value.items() %}
+                              <tbody>
+                                <tr>
+                                  <td>{{ key }}</td>
+                                  <td>{{ val }}</td>
+                                </tr>
+                              </tbody>
+                              {% endfor %}
+                            </table>
+                          </td>
+                          {% else %}
                           <td>{{ value }}</td>
+                          {% endif %}
                         </tr>
                         {% endfor %}
                       </tbody>
