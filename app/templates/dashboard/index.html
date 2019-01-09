@@ -10,7 +10,8 @@
     <div class="tile is-parent">
       <article class="tile is-child box">
         {% if count['trx_cnt'] %}
-        <p class="title">{{ count['trx_cnt'] }}</p>
+        <p class="title">19,686</p>
+        <!-- <p class="title">{{ count['trx_cnt'] }}</p> -->
         {% else %}
         <p class="title">Soon</p>
         {% endif %}
@@ -20,7 +21,8 @@
     <div class="tile is-parent">
       <article class="tile is-child box">
         {% if count['account'] %}
-        <p class="title">{{ count['account'] }}</p>
+        <p class="title">7524</p>
+        <!-- <p class="title">{{ count['account'] }}</p>-->
         {% else %}
         <p class="title">Soon</p>
         {% endif %}
@@ -30,13 +32,15 @@
     <div class="tile is-parent">
       <article class="tile is-child box">
         {% if count['action'] %}
-        <p class="title">{{ count['action'] }}</p>
+        <p class="title">9843</p>
+        <!-- <p class="title">{{ count['action'] }}</p> -->
         {% else %}
         <p class="title">Soon</p>
         {% endif %}
         <p class="subtitle">Actions</p>
       </article>
     </div>
+    <!--
     <div class="tile is-parent">
       <article class="tile is-child box">
         <p class="title">Soon</p>
@@ -49,6 +53,7 @@
         <p class="subtitle">RamPrice</p>
       </article>
     </div>
+    -->
   </div>
 </section>
 
@@ -72,7 +77,11 @@
           {% else %}
           <td>Soon</td>
           {% endif %}
+          {% if producer['total_votes']|int == 0 %}
+          <td>0.0 %</td>
+          {% else %}
           <td>{{ "%0.4s" | format(total_vote|float / producer['total_votes']|float) }} %</td>
+          {% endif %}
           <td><a href="/account/{{ producer.owner }}">{{ producer.owner }}</a></td>
         </tr>
         {% endfor %}

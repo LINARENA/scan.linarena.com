@@ -38,23 +38,43 @@
         </tr>
         <tr>
           <td>Status</td>
+          {% if transaction.trx != None %}
           <td>{{ transaction.trx.receipt.status }}</td>
+          {% else %}
+          <td> None </td>
+          {% endif %}
         </tr>
         <tr>
           <td>Expiration</td>
+          {% if transaction.trx != None %}
           <td>{{ transaction.trx.trx.expiration }}</td>
+          {% else %}
+          <td> None </td>
+          {% endif %}
         </tr>
         <tr>
           <td>Ref Block Num</td>
+          {% if transaction.trx != None %}
           <td><a href="/block/num/{{ transaction.trx.trx.ref_block_num }}">{{ transaction.trx.trx.ref_block_num }}</a></td>
+          {% else %}
+          <td> None </td>
+          {% endif %}
         </tr>
         <tr>
           <td>Ref Block Prefix</td>
+          {% if transaction.trx != None %}
           <td>{{ transaction.trx.trx.ref_block_prefix }}</td>
+          {% else %}
+          <td> None </td>
+          {% endif %}
         </tr>
         <tr>
           <td>Actions</td>
+          {% if transaction.trx != None %}
           <td>{{ transaction.trx.trx.actions | length}}</td>
+          {% else %}
+          <td> None </td>
+          {% endif %}
         </tr>
       </tbody>
     </table>
@@ -69,6 +89,7 @@
         </tr>
       </thead>
       <tbody>
+        {% if transaction.trx != None %}
         {% for action in transaction.trx.trx.actions %}
         <tr>
           <td><button class="button is-{{ ['primary', 'link', '', 'info', 'success', 'danger']|random }} is-outlined">{{ action.name }}</button></td>
@@ -115,6 +136,7 @@
           </td>
         </tr>
         {% endfor %}
+        {% endif %}
       </tbody>
     </table>
   </span>

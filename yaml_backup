@@ -1,0 +1,19 @@
+runtime: python
+env: flex
+
+runtime_config:
+  python_version: 3
+
+instance_class: F2
+
+env_variables:
+  SQLALCHEMY_DATABASE_URI: >-
+    mysql+pymysql://root:hsangel@/scanner?unix_socket=/cloudsql/scan-reponse-co:asia-northeast1:scan-reponse-co
+
+beta_settings:
+  cloud_sql_instances: scan-reponse-co:asia-northeast1:scan-reponse-co
+
+handlers:
+- url: /.*
+  script: main.app
+  secure: always

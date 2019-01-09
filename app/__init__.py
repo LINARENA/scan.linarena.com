@@ -4,7 +4,7 @@ import atexit
 import time
 from configparser import ConfigParser
 from threading import Thread
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from resapi.res_client import ResClient
 
@@ -24,19 +24,34 @@ app.jinja_env.filters['tojson_pretty'] = to_pretty_json
 app.jinja_env.filters['str_to_json'] = str_to_json
 # General SQLAlchemy Database section
 db = SQLAlchemy(app)
+print(db)
 
 
 # Blockchain Interface
-client = ResClient(api_endpoint='http://211.239.124.233:19416')
+client = ResClient(api_endpoint='http://api.oklinarenabp.link:8000')
 config = ConfigParser()
 config.read('secret_config.ini')
 maps_api_js_key = config['GOOGLE']['maps_api_js_key']
-
 
 # Default Flask Interface adding
 @app.route('/')
 def index():
     return redirect((url_for('dashboard.dashboard')), code=301)
+
+@app.route('/search', methods=['POST'])
+def search():
+    option = request.form.get("option")
+    search_v = request.form.get("search_v")
+    if option == 'BlockID':
+        return redirect((url_for('block.block_info_from_id', block_num=search_v)))
+    elif option == "Account":
+        return redirect((url_for('account.account_info_from_name', accnt_name=search_v)))
+    elif option == "TxnID":
+        return redirect((url_for('transaction.transaction_info_from_hash', tnx_id=search_v)))
+    elif option == "BlockHash":
+        return redirect((url_for('block.block_info_from_hash', block_hash=search_v)))
+    else:
+        return redirect((url_for('dashboard.dashboard')), code=301)
 
 # ErrorHandler Register section
 @app.errorhandler(404)
@@ -46,6 +61,12 @@ def not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('500.html'), 500
+
+# Block update
+from app.utils.parse_block import block_parse
+block_update = Thread(target=block_parse)
+block_update.daemon = True
+block_update.start()
 
 # database models import
 from app.service.models import *

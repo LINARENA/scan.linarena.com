@@ -5,3 +5,6 @@ PyMySQL
 flask-pagination
 requests
 apscheduler
+gunicorn
+pathlib
+configparser

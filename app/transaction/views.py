@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template
 from flask import abort
 from app.transaction.models import *
+from app.block.models import *
 from app import client
 
 mod = Blueprint('transaction', __name__, url_prefix='/transaction')
@@ -27,6 +28,10 @@ def transaction_info_from_hash(tnx_id):
         abort(404)
     transaction = client.history_get_transaction(tnx_id)
     if transaction is None:
-        abort(404)
+        old_trans = Transaction.query.filter(Transaction.txn_id==tnx_id).first()
+        if old_trans is None:
+            abort(404)
+        else:
+            transaction = client.history_get_transaction(tnx_id, old_trans.block_id)
     return render_template('transaction/transaction.html',
                            transaction=transaction)

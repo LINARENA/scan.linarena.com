@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 <hr>
-<center><h4 class="subtitle is-4">Current view accnt_info is <strong>{{ accnt_info.account_name }}</strong></h4></center>
+<center><h4 class="subtitle is-4"><strong>{{ accnt_info.account_name }}</strong> Account information</h4></center>
 <hr>
 <div class="tabs is-toggle is-fullwidth" id="tabs">
   <ul>
@@ -143,6 +143,7 @@
                         <th>Values</th>
                       </thead>
                       <tbody>
+                        {% if action.action_trace.act.data is mapping %}
                         {% for key, value in action.action_trace.act.data.items() %}
                         <tr>
                           <td>{{ key }}</td>
@@ -170,6 +171,9 @@
                           {% endif %}
                         </tr>
                         {% endfor %}
+                        {% else %}
+                        {{ action.action_trace.act.data|truncate(35) }} ...
+                        {% endif %}
                       </tbody>
                     </table>
                   </td>

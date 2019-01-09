@@ -4,8 +4,8 @@ from sqlalchemy.dialects.mysql import BIGINT
 
 class Block(db.Model):
     __tablename__ = 'block_tbl'
-    __table_args__ = {'sqlite_autoincrement': True}
-    idx = db.Column(db.BIGINT, primary_key=True)
+    # __table_args__ = {'sqlite_autoincrement': True}
+    idx = db.Column(db.BIGINT, primary_key=True, autoincrement=True)
     block_num = db.Column(BIGINT(unsigned=True), unique=True)
     block_id = db.Column(db.String(64), unique=True)
     timestamp = db.Column(db.String(30))

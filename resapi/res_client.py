@@ -85,8 +85,12 @@ class ResClient:
                                  {'account_name': account_name,
                                   'pos': pos,
                                   'offset': offset})
-    def history_get_transaction(self, transaction_id):
-        return self.api_request(endpoints.HISTORY_GET_TRANSACTION, {'id': transaction_id})
+    def history_get_transaction(self, transaction_id, block_id=None):
+        if block_id is None:
+            return self.api_request(endpoints.HISTORY_GET_TRANSACTION, {'id': transaction_id})
+        else:
+            print('block_id hint check')
+            return self.api_request(endpoints.HISTORY_GET_TRANSACTION, {'id': transaction_id, "block_num_hint": block_id})
     # ===== SYSTEM CONTRACT TRANSACTIONS =====
     def get_system_newaccount_binargs(self, creator, name, owner_key, active_key):
         return self.chain_abi_json_to_bin({

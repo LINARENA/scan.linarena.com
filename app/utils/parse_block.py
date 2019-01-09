@@ -7,8 +7,10 @@ from app import client
 from app import db
 import time
 import json
-import sqlalchemy
 
+from app.service.models import Producer
+from app import client, db
+from app import maps_api_js_key
 
 def block_parse():
     try:
@@ -19,8 +21,8 @@ def block_parse():
             else:
                 current_block = loc_last_block[-1].block_num
             parse_last_block = client.chain_get_info()['head_block_num']
-            test_count = 0
-            while current_block < parse_last_block and test_count < 100:
+            sync_count = 0
+            while current_block < parse_last_block and sync_count < 100:
                 current_block += 1
                 block_info = client.chain_get_block(current_block)
                 block_num = block_info['block_num']
@@ -39,20 +41,25 @@ def block_parse():
                         trx = Transaction(txn_id, timestamp, len(actions), block_num)
                         db.session.add(trx)
                         if len(actions) != 0:
-                            acts, accounts = action_parse(txn_id, block_num)
+                            acts, accounts = action_parse(txn_id)
                             for act in acts:
                                 db.session.add(act)
                             for account in accounts:
                                 db.session.add(account)
                 db.session.commit()
-                test_count += 1
+                sync_count += 1
                 # Sleep for node chain performance
-            time.sleep(0.5)
-    except sqlalchemy.exc.IntegrityError:
-        pass
+                time.sleep(0.5)
+            if sync_count < 100:
+                time.sleep(10)
+            else:
+                time.sleep(5)
+    except Exception as e:
+        print(e)
 
-def action_parse(txn_id, block_id):
-    act_data = client.history_get_transaction(txn_id, block_id)
+
+def action_parse(txn_id):
+    act_data = client.history_get_transaction(txn_id)
     actions = act_data['trx']['trx']['actions']
     ret_action = []
     ret_account = []
@@ -69,6 +76,3 @@ def action_parse(txn_id, block_id):
             account = Account(account_name, created, block_num)
             ret_account.append(account)
     return ret_action, ret_account
-
-if __name__ == '__main__':
-    print(block_parse())

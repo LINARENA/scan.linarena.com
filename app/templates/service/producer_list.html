@@ -4,7 +4,7 @@
     <tr>
       <th><abbr title="Rank">Rank</abbr></th>
       <th>Team</th>
-      <th><abbr title="RES Votes">RES Votes</abbr></th>
+      <th><abbr title="LIN Votes">LIN Votes</abbr></th>
       <th><abbr title="Account">Account</abbr></th>
       <th><abbr title="Location">Location</abbr></th>
       <th><abbr title="Home">Home</abbr></th>
@@ -14,7 +14,7 @@
     <tr>
       <th><abbr title="Rank">Rank</abbr></th>
       <th>Team</th>
-      <th><abbr title="RES Votes">RES Votes</abbr></th>
+      <th><abbr title="LIN Votes">LIN Votes</abbr></th>
       <th><abbr title="Account">Account</abbr></th>
       <th><abbr title="Location">Location</abbr></th>
       <th><abbr title="Home">Home</abbr></th>
@@ -25,7 +25,11 @@
     <tr>
       <td>{{ loop.index }}</td>
       <td><a href="/service/producer/{{ producer.team }}">{{ producer.team }}</a></td>
+      {% if producer['total_votes']|int == 0 %}
+      <td>{{ "{:,.2f}".format(producer.total_votes|float) }}<strong>(0.0 %)</td>
+      {% else %}
       <td>{{ "{:,.2f}".format(producer.total_votes|float) }}<strong>({{ "%0.4s" | format(total_vote|float / producer['total_votes']|float) }} %)</strong></td>
+      {% endif %}
       <td><a href="/account/{{ producer.owner }}">{{ producer['owner'] }}</a></td>
       <td>{{ producer.loc }}</td>
       <td><a target="_blank" href="{{ producer.homepage }}">{{ producer.homepage }}</a></td>
